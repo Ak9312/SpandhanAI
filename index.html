@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Spandhan Storefront</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Hind:wght@400;500;600&display=swap">
+<style>
+/* Layout: marketplace homepage — sticky header + category rail, hero carousel, tile grid overlapping the hero fade, scrolling shelves, deep footer */
+:root{
+  --ink:#0d3534;        /* deep teal: header, footer */
+  --ink-2:#14504d;      /* teal: sub-nav */
+  --marigold:#f2b33d;   /* accent: search button, CTAs */
+  --marigold-d:#d9961a;
+  --vermilion:#c8412b;  /* deal badges */
+  --bg:#eef1ef;         /* page ground, slight teal bias */
+  --card:#ffffff;
+  --fg:#1b2422;
+  --muted:#5d6b67;
+  --line:#d6dedb;
+  --on-ink:#f4f7f6;
+  --on-ink-muted:#a9c3bf;
+  --link:#11706a;
+  --tile-1:#e3efe9; --tile-2:#f6ead6; --tile-3:#e6e8f3; --tile-4:#f3e3e0; --tile-5:#e9f0dc; --tile-6:#e1eef3;
+  --icon:#24433f;
+  --hero-fade:#eef1ef;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Hind", "Segoe UI", system-ui, sans-serif;
+  --star:#e09a12;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ink:#08201f; --ink-2:#0e3533; --marigold:#f2b33d; --marigold-d:#ffc65c; --vermilion:#e2604a;
+  --bg:#111816; --card:#1a2321; --fg:#e7eeec; --muted:#9db0ab; --line:#2b3835;
+  --on-ink:#f4f7f6; --on-ink-muted:#8fb0ab; --link:#5ccbc1;
+  --tile-1:#1f3a33; --tile-2:#3a3020; --tile-3:#262b42; --tile-4:#3d2925; --tile-5:#2c3a20; --tile-6:#1f3540;
+  --icon:#cfe4df; --hero-fade:#111816; --star:#f2b33d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ink:#08201f; --ink-2:#0e3533; --marigold:#f2b33d; --marigold-d:#ffc65c; --vermilion:#e2604a;
+  --bg:#111816; --card:#1a2321; --fg:#e7eeec; --muted:#9db0ab; --line:#2b3835;
+  --on-ink:#f4f7f6; --on-ink-muted:#8fb0ab; --link:#5ccbc1;
+  --tile-1:#1f3a33; --tile-2:#3a3020; --tile-3:#262b42; --tile-4:#3d2925; --tile-5:#2c3a20; --tile-6:#1f3540;
+  --icon:#cfe4df; --hero-fade:#111816; --star:#f2b33d; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--marigold);outline-offset:2px;border-radius:4px}
+.ico{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{max-width:1500px;margin:0 auto;padding-inline:16px}
+
+/* ===== Header ===== */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20}
+.bar{background:var(--ink);color:var(--on-ink)}
+.bar .wrap{display:flex;align-items:center;gap:14px;padding-block:10px}
+.logo{font-family:var(--display);font-weight:800;font-size:27px;letter-spacing:-.03em;display:flex;align-items:flex-end;line-height:1;padding:4px 6px;border:1px solid transparent;border-radius:4px}
+.logo .dot{color:var(--marigold)}
+.logo small{font-family:var(--body);font-weight:500;font-size:13px;color:var(--on-ink-muted);margin-left:2px;letter-spacing:0}
+.hit{border:1px solid transparent;border-radius:4px;padding:4px 6px}
+.hit:hover{border-color:var(--on-ink-muted)}
+.meta{display:flex;flex-direction:column;line-height:1.15;white-space:nowrap}
+.meta span{font-size:12px;color:var(--on-ink-muted)}
+.meta b{font-size:14px;font-weight:600}
+.loc{display:flex;align-items:flex-end;gap:4px}
+.loc .ico{font-size:18px;margin-bottom:2px}
+.search{flex:1;display:flex;min-width:0;height:42px;border-radius:6px;overflow:hidden;background:var(--card)}
+.search:focus-within{box-shadow:0 0 0 3px var(--marigold)}
+.search select{border:0;background:var(--line);color:var(--fg);padding:0 8px;font:inherit;font-size:13px;max-width:110px}
+.search input{flex:1;min-width:0;border:0;padding:0 12px;font:inherit;font-size:16px;background:var(--card);color:var(--fg);outline:none}
+.search button{background:var(--marigold);color:#1c1606;width:52px;display:grid;place-items:center}
+.search button:hover{background:var(--marigold-d)}
+.search button .ico{font-size:22px;stroke-width:2}
+.cart{display:flex;align-items:flex-end;gap:2px;font-weight:600;position:relative}
+.cart .ico{font-size:34px}
+.cart output{position:absolute;left:19px;top:0;color:var(--marigold);font-weight:700;font-size:16px;width:18px;text-align:center;font-variant-numeric:tabular-nums}
+.lang{display:flex;align-items:center;gap:4px;font-weight:600;font-size:14px}
+.sub{background:var(--ink-2);color:var(--on-ink)}
+.sub .wrap{display:flex;gap:4px;align-items:center;padding-block:4px;overflow-x:auto;scrollbar-width:none}
+.sub .wrap::-webkit-scrollbar{display:none}
+.sub a{white-space:nowrap;font-size:14px;padding:5px 8px}
+.sub .all{display:flex;gap:6px;align-items:center;font-weight:600}
+.sub .festive{margin-left:auto;font-weight:600;color:var(--marigold)}
+.mobile-search{display:none}
+
+/* ===== Hero carousel ===== */
+.hero{position:relative;max-width:1500px;margin:0 auto;overflow:hidden}
+.slides{display:flex;transition:transform .6s ease}
+.slide{flex:0 0 100%;min-height:420px;display:grid;grid-template-columns:1.1fr .9fr;align-items:start;padding:48px 8% 0;gap:24px;position:relative}
+.slide h2{font-family:var(--display);font-weight:800;font-size:clamp(30px,4.4vw,58px);line-height:1;letter-spacing:-.03em;margin:8px 0 12px;text-wrap:balance}
+.slide p{margin:0 0 18px;font-size:17px;max-width:42ch}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.cta{display:inline-flex;align-items:center;gap:8px;background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600}
+.cta:hover{opacity:.88}
+.s1{background:linear-gradient(120deg,#5b1a12,#a8361d 55%,#e48a2a);color:#fff6ea}
+.s1 .cta{background:#fff3e0;color:#5b1a12}
+.s2{background:linear-gradient(120deg,#0b3a4a,#13707a 60%,#4fb3a5);color:#effbf9}
+.s2 .cta{background:#effbf9;color:#0b3a4a}
+.s3{background:linear-gradient(120deg,#2e2350,#5a4396 60%,#a68bd8);color:#f5f1ff}
+.s3 .cta{background:#f5f1ff;color:#2e2350}
+.art{position:relative;height:300px}
+.art .ico{position:absolute;stroke-width:1.1;color:currentColor;opacity:.92}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:240px;background:linear-gradient(transparent,var(--hero-fade));pointer-events:none}
+.arrow{position:absolute;top:0;height:250px;width:64px;display:grid;place-items:center;color:#fff;z-index:2}
+.arrow .ico{font-size:40px;stroke-width:1.4}
+.arrow:hover .ico{transform:scale(1.1)}
+.arrow.prev{left:0}.arrow.next{right:0}
+.dots{position:absolute;top:262px;left:8%;display:flex;gap:6px;z-index:2}
+.dots button{width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.4)}
+.dots button[aria-current="true"]{background:#fff;width:36px}
+
+/* ===== Tile grid ===== */
+.tiles{position:relative;z-index:3;margin-top:-180px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.tile{background:var(--card);padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;border-radius:2px}
+.tile h3{font-family:var(--display);font-weight:700;font-size:20px;margin:0;line-height:1.15;letter-spacing:-.01em;text-wrap:balance}
+.quad{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;flex:1}
+.quad a{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.thumb{aspect-ratio:1/1;max-width:100%;display:grid;place-items:center;color:var(--icon)}
+.thumb .ico{font-size:52px;stroke-width:1.2}
+.big{flex:1;display:grid;place-items:center;aspect-ratio:1/1;max-width:100%;color:var(--icon)}
+.big .ico{font-size:150px;stroke-width:.9}
+.more{color:var(--link);font-size:13px;font-weight:500}
+.more:hover{text-decoration:underline}
+
+/* ===== Shelves ===== */
+.shelf{background:var(--card);margin-top:22px;padding:18px 18px 20px;border-radius:2px;position:relative}
+.shelf header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.shelf h3{font-family:var(--display);font-weight:700;font-size:21px;margin:0;letter-spacing:-.01em}
+.timer{font-size:13px;color:var(--vermilion);font-weight:600;font-variant-numeric:tabular-nums}
+.track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:8px;scrollbar-width:thin}
+.p{flex:0 0 200px;scroll-snap-align:start;display:flex;flex-direction:column;gap:5px}
+.p .thumb{border-radius:4px}
+.p .thumb .ico{font-size:84px}
+.badge{display:flex;gap:8px;align-items:center;font-size:12px}
+.badge b{background:var(--vermilion);color:#fff;padding:2px 6px;border-radius:2px;font-weight:600}
+.badge span{color:var(--vermilion);font-weight:600}
+.p .name{font-size:14px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em}
+.p .name:hover{color:var(--link)}
+.stars{font-size:13px;color:var(--star);display:flex;gap:4px;align-items:center}
+.stars small{color:var(--link);font-size:12px}
+.price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.price strong{font-size:20px;font-weight:500}
+.price strong sup{font-size:12px;top:-.6em}
+.price s{color:var(--muted);font-size:12px}
+.ship{font-size:12px;color:var(--muted)}
+.add{margin-top:4px;background:var(--marigold);color:#1c1606;border-radius:999px;padding:6px 0;font-size:13px;font-weight:600}
+.add:hover{background:var(--marigold-d)}
+.add[data-added]{background:var(--line);color:var(--fg)}
+.scroll-btn{position:absolute;top:50%;width:40px;height:90px;background:var(--card);border:1px solid var(--line);border-radius:4px;display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.scroll-btn.l{left:4px}.scroll-btn.r{right:4px}
+.scroll-btn .ico{font-size:22px}
+
+/* ===== Strip & signin ===== */
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
+.strip .tile{flex-direction:row;align-items:center;gap:16px}
+.strip .tile .ico{font-size:40px;color:var(--link);stroke-width:1.4}
+.strip p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.signin{background:var(--card);margin-top:22px;padding:28px 16px;text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.signin p{margin:0 0 8px;font-size:13px}
+.signin .cta{background:var(--marigold);color:#1c1606;padding:8px 70px}
+
+/* ===== Footer ===== */
+footer{margin-top:28px}
+.backtop{display:block;width:100%;background:var(--ink-2);color:var(--on-ink);padding:15px;font-size:13px}
+.backtop:hover{filter:brightness(1.12)}
+.fcols{background:var(--ink);color:var(--on-ink)}
+.fcols .wrap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;padding-block:40px;max-width:1000px}
+.fcols h4{font-family:var(--display);font-size:16px;margin:0 0 10px;font-weight:700}
+.fcols ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.fcols a{font-size:14px;color:var(--on-ink-muted)}
+.fcols a:hover{color:var(--on-ink);text-decoration:underline}
+.fbase{background:var(--ink);color:var(--on-ink-muted);border-top:1px solid rgba(255,255,255,.1);font-size:12px}
+.fbase .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:center;align-items:center;padding-block:22px;text-align:center}
+.fbase .logo{font-size:22px;color:var(--on-ink)}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;z-index:50;pointer-events:none;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ===== Responsive ===== */
+@media (max-width:1100px){
+  .tiles{grid-template-columns:repeat(2,1fr)}
+  .lang,.orders{display:none}
+}
+@media (max-width:760px){
+  .bar .wrap{flex-wrap:wrap;gap:8px}
+  .bar .loc,.bar .search{display:none}
+  .account{margin-left:auto}
+  .mobile-search{display:flex;width:100%;flex:1 1 100%}
+  .mobile-search .search{display:flex}
+  .mobile-search select{display:none}
+  .slide{grid-template-columns:1fr;min-height:340px;padding:28px 56px 0}
+  .art{display:none}
+  .arrow{height:200px;width:44px}
+  .dots{top:auto;bottom:130px;left:56px}
+  .tiles{margin-top:-110px;gap:12px}
+  .strip{grid-template-columns:1fr}
+  .fcols .wrap{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .scroll-btn{display:none}
+  .p{flex-basis:160px}
+}
+@media (max-width:480px){
+  .tiles{grid-template-columns:1fr}
+  .account .meta span{display:none}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18.5h2"/></symbol>
+  <symbol id="i-head" viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="7" rx="1.5"/><rect x="17" y="14" width="4" height="7" rx="1.5"/></symbol>
+  <symbol id="i-laptop" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></symbol>
+  <symbol id="i-watch" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M12 9.5V12l2 1.2M9 6.6 10 2h4l1 4.6M9 17.4 10 22h4l1-4.6"/></symbol>
+  <symbol id="i-kurta" viewBox="0 0 24 24"><path d="M8.5 3 4 5.5l1.5 5 2.5-1V21h8V9.5l2.5 1 1.5-5L15.5 3c-.6 1.7-2 2.8-3.5 2.8S9.1 4.7 8.5 3z"/><path d="M12 6v5"/></symbol>
+  <symbol id="i-kadai" viewBox="0 0 24 24"><path d="M3 11h18c0 5-4 8-9 8s-9-3-9-8z"/><path d="M1.5 11h2M20.5 11h2M12 8V6"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M3 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H3zM21 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z"/></symbol>
+  <symbol id="i-diya" viewBox="0 0 24 24"><path d="M3 14c1.5 4.5 16.5 4.5 18 0z"/><path d="M12 11.5c-2.2-2-.4-5.2 0-8 1.6 2.4 2.3 5.4 0 8z"/><path d="M9 18.5l-1 2h8l-1-2"/></symbol>
+  <symbol id="i-shoe" viewBox="0 0 24 24"><path d="M3 17v-6.5l4.5-1 3 3.2 5 1c4 .7 5.5 2 5.5 3.6V18H3z"/><path d="M3 15h18"/></symbol>
+  <symbol id="i-bottle" viewBox="0 0 24 24"><path d="M10 2h4v3l1.5 2.5V20a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2V7.5L10 5z"/><path d="M8.5 11h7"/></symbol>
+  <symbol id="i-tv" viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="13" rx="1.5"/><path d="M8 21h8M12 17.5V21"/></symbol>
+  <symbol id="i-plant" viewBox="0 0 24 24"><path d="M12 15V9"/><path d="M12 10c-3.5 0-5.5-2.5-5.5-6 3.5 0 5.5 2.5 5.5 6zM12 10c3.5 0 5.5-2.5 5.5-6-3.5 0-5.5 2.5-5.5 6z"/><path d="M7 15h10l-1.5 7h-7z"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="14" rx="3"/><path d="M9 7V5.5a3 3 0 0 1 6 0V7M9 13h6"/></symbol>
+  <symbol id="i-lip" viewBox="0 0 24 24"><rect x="8.5" y="12" width="7" height="10" rx="1"/><path d="M10 12V7.5L14 4v8"/></symbol>
+  <symbol id="i-mixer" viewBox="0 0 24 24"><path d="M7 2.5h10l-1.2 9H8.2z"/><rect x="5.5" y="11.5" width="13" height="10" rx="2"/><circle cx="12" cy="16.5" r="1.6"/></symbol>
+  <symbol id="i-saree" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 8h16M4 16h16M8 4v16"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.2"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24"><path d="M2 4h3l2.4 11h11l2-8H6.2"/><circle cx="9" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></symbol>
+  <symbol id="i-truck" viewBox="0 0 24 24"><path d="M2 6h11v10H2zM13 9h4.5l3.5 4v3h-8z"/><circle cx="6" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></symbol>
+  <symbol id="i-return" viewBox="0 0 24 24"><path d="M4 9h11a5 5 0 0 1 0 10H8"/><path d="m8 5-4 4 4 4"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.5 3.2 7.7 7.5 9 4.3-1.3 7.5-4.5 7.5-9V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+</svg>
+
+<div class="top" id="top">
+  <div class="bar">
+    <div class="wrap">
+      <a class="logo" href="#top" aria-label="Spandhan home">spandhan<span class="dot">.</span><small>in</small></a>
+      <a class="loc hit" href="#top"><svg class="ico"><use href="#i-pin"/></svg><span class="meta"><span>Deliver to Priya</span><b>Pune 411001</b></span></a>
+      <form class="search" id="search-desktop" role="search">
+        <select id="cat" aria-label="Search category"><option>All</option><option>Mobiles</option><option>Electronics</option><option>Fashion</option><option>Home &amp; Kitchen</option><option>Books</option><option>Beauty</option></select>
+        <input id="q" type="search" placeholder="Search Spandhan.in" aria-label="Search products">
+        <button type="submit" aria-label="Search"><svg class="ico"><use href="#i-search"/></svg></button>
+      </form>
+      <a class="lang hit" href="#top"><svg class="ico"><use href="#i-globe"/></svg>EN · हिं</a>
+      <a class="account hit meta" href="#signin"><span>Hello, sign in</span><b>Account &amp; Lists</b></a>
+      <a class="orders hit meta" href="#top"><span>Returns</span><b>&amp; Orders</b></a>
+      <a class="cart hit" href="#top" aria-label="Cart"><svg class="ico"><use href="#i-cart"/></svg><output id="cart-count">0</output>Cart</a>
+      <div class="mobile-search">
+        <form class="search" id="search-mobile" role="search">
+          <input id="q-m" type="search" placeholder="Search Spandhan.in" aria-label="Search products">
+          <button type="submit" aria-label="Search"><svg class="ico"><use href="#i-search"/></svg></button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <nav class="sub" aria-label="Categories">
+    <div class="wrap">
+      <a class="all hit" href="#top"><svg class="ico"><use href="#i-menu"/></svg>All</a>
+      <a class="hit" href="#deals">Today's Deals</a>
+      <a class="hit" href="#top">Fresh</a>
+      <a class="hit" href="#top">Mobiles</a>
+      <a class="hit" href="#top">Electronics</a>
+      <a class="hit" href="#top">Fashion</a>
+      <a class="hit" href="#kitchen">Home &amp; Kitchen</a>
+      <a class="hit" href="#top">Books</a>
+      <a class="hit" href="#top">Beauty</a>
+      <a class="hit" href="#top">Customer Service</a>
+      <a class="hit" href="#top">Gift Cards</a>
+      <a class="hit festive" href="#top">Utsav Sale is live</a>
+    </div>
+  </nav>
+</div>
+
+<main>
+  <section class="hero" aria-label="Featured offers">
+    <div class="slides" id="slides">
+      <div class="slide s1">
+        <div>
+          <div class="eyebrow">Utsav Sale · Festive Home</div>
+          <h2>Light up every corner this Diwali</h2>
+          <p>Up to 60% off on diyas, décor and kitchenware. Extra 10% instant discount with UPI and select bank cards.</p>
+          <a class="cta" href="#kitchen">Shop festive home</a>
+        </div>
+        <div class="art" aria-hidden="true">
+          <svg class="ico" style="font-size:230px;left:10%;top:10px"><use href="#i-diya"/></svg>
+          <svg class="ico" style="font-size:120px;left:62%;top:110px"><use href="#i-diya"/></svg>
+          <svg class="ico" style="font-size:80px;left:70%;top:0"><use href="#i-plant"/></svg>
+        </div>
+      </div>
+      <div class="slide s2">
+        <div>
+          <div class="eyebrow">Mobiles &amp; Accessories</div>
+          <h2>5G phones from ₹8,499</h2>
+          <p>No-cost EMI from ₹944 a month. Exchange your old phone for up to ₹12,000 off.</p>
+          <a class="cta" href="#deals">See today's deals</a>
+        </div>
+        <div class="art" aria-hidden="true">
+          <svg class="ico" style="font-size:250px;left:8%;top:0"><use href="#i-phone"/></svg>
+          <svg class="ico" style="font-size:140px;left:52%;top:90px"><use href="#i-head"/></svg>
+          <svg class="ico" style="font-size:90px;left:74%;top:10px"><use href="#i-watch"/></svg>
+        </div>
+      </div>
+      <div class="slide s3">
+        <div>
+          <div class="eyebrow">Books Week</div>
+          <h2>Any two paperbacks for ₹399</h2>
+          <p>Fiction, exam prep and children's books in English, Hindi, Marathi and Tamil.</p>
+          <a class="cta" href="#books">Browse books</a>
+        </div>
+        <div class="art" aria-hidden="true">
+          <svg class="ico" style="font-size:240px;left:6%;top:10px"><use href="#i-book"/></svg>
+          <svg class="ico" style="font-size:130px;left:60%;top:100px"><use href="#i-book"/></svg>
+        </div>
+      </div>
+    </div>
+    <button class="arrow prev" id="prev" aria-label="Previous offer"><svg class="ico"><use href="#i-left"/></svg></button>
+    <button class="arrow next" id="next" aria-label="Next offer"><svg class="ico"><use href="#i-right"/></svg></button>
+    <div class="dots" id="dots"></div>
+  </section>
+
+  <div class="wrap">
+    <section class="tiles" aria-label="Shop by category">
+      <article class="tile">
+        <h3>Revamp your kitchen for the festive season</h3>
+        <div class="quad">
+          <a href="#kitchen"><span class="thumb" style="background:var(--tile-2)"><svg class="ico"><use href="#i-kadai"/></svg></span>Cookware</a>
+          <a href="#kitchen"><span class="thumb" style="background:var(--tile-1)"><svg class="ico"><use href="#i-mixer"/></svg></span>Mixer grinders</a>
+          <a href="#kitchen"><span class="thumb" style="background:var(--tile-6)"><svg class="ico"><use href="#i-bottle"/></svg></span>Bottles &amp; flasks</a>
+          <a href="#kitchen"><span class="thumb" style="background:var(--tile-4)"><svg class="ico"><use href="#i-diya"/></svg></span>Pooja essentials</a>
+        </div>
+        <a class="more" href="#kitchen">Explore all</a>
+      </article>
+      <article class="tile">
+        <h3>Festive ethnic wear, up to 70% off</h3>
+        <div class="quad">
+          <a href="#top"><span class="thumb" style="background:var(--tile-4)"><svg class="ico"><use href="#i-kurta"/></svg></span>Kurtas</a>
+          <a href="#top"><span class="thumb" style="background:var(--tile-3)"><svg class="ico"><use href="#i-saree"/></svg></span>Sarees</a>
+          <a href="#top"><span class="thumb" style="background:var(--tile-2)"><svg class="ico"><use href="#i-shoe"/></svg></span>Juttis &amp; footwear</a>
+          <a href="#top"><span class="thumb" style="background:var(--tile-5)"><svg class="ico"><use href="#i-bag"/></svg></span>Bags</a>
+        </div>
+        <a class="more" href="#top">See more</a>
+      </article>
+      <article class="tile">
+        <h3>Smartwatches under ₹2,999</h3>
+        <a class="big" href="#deals" style="background:var(--tile-6)" aria-label="Smartwatches"><svg class="ico"><use href="#i-watch"/></svg></a>
+        <a class="more" href="#deals">Shop now</a>
+      </article>
+      <article class="tile">
+        <h3>Upgrade your home entertainment</h3>
+        <div class="quad">
+          <a href="#deals"><span class="thumb" style="background:var(--tile-3)"><svg class="ico"><use href="#i-tv"/></svg></span>Smart TVs</a>
+          <a href="#deals"><span class="thumb" style="background:var(--tile-1)"><svg class="ico"><use href="#i-head"/></svg></span>Headphones</a>
+          <a href="#deals"><span class="thumb" style="background:var(--tile-5)"><svg class="ico"><use href="#i-laptop"/></svg></span>Laptops</a>
+          <a href="#deals"><span class="thumb" style="background:var(--tile-6)"><svg class="ico"><use href="#i-phone"/></svg></span>Tablets</a>
+        </div>
+        <a class="more" href="#deals">See all offers</a>
+      </article>
+    </section>
+
+    <section class="shelf" id="deals" aria-labelledby="deals-h">
+      <header><h3 id="deals-h">Today's Deals</h3><span class="timer" id="timer">Ends in 06:12:40</span><a class="more" href="#deals">See all deals</a></header>
+      <button class="scroll-btn l" data-dir="-1" aria-label="Scroll left"><svg class="ico"><use href="#i-left"/></svg></button>
+      <div class="track" data-shelf="deals"></div>
+      <button class="scroll-btn r" data-dir="1" aria-label="Scroll right"><svg class="ico"><use href="#i-right"/></svg></button>
+    </section>
+
+    <div class="strip">
+      <div class="tile"><svg class="ico"><use href="#i-truck"/></svg><div><b>Free delivery over ₹499</b><p>Next-day delivery in 40+ cities</p></div></div>
+      <div class="tile"><svg class="ico"><use href="#i-return"/></svg><div><b>10-day easy returns</b><p>Free pickup from your doorstep</p></div></div>
+      <div class="tile"><svg class="ico"><use href="#i-shield"/></svg><div><b>Pay on delivery</b><p>Cash, UPI or card at your door</p></div></div>
+    </div>
+
+    <section class="shelf" id="kitchen" aria-labelledby="kitchen-h">
+      <header><h3 id="kitchen-h">Bestsellers in Home &amp; Kitchen</h3><a class="more" href="#kitchen">See more</a></header>
+      <button class="scroll-btn l" data-dir="-1" aria-label="Scroll left"><svg class="ico"><use href="#i-left"/></svg></button>
+      <div class="track" data-shelf="kitchen"></div>
+      <button class="scroll-btn r" data-dir="1" aria-label="Scroll right"><svg class="ico"><use href="#i-right"/></svg></button>
+    </section>
+
+    <section class="shelf" id="books" aria-labelledby="books-h">
+      <header><h3 id="books-h">Books Week picks</h3><a class="more" href="#books">See more</a></header>
+      <button class="scroll-btn l" data-dir="-1" aria-label="Scroll left"><svg class="ico"><use href="#i-left"/></svg></button>
+      <div class="track" data-shelf="books"></div>
+      <button class="scroll-btn r" data-dir="1" aria-label="Scroll right"><svg class="ico"><use href="#i-right"/></svg></button>
+    </section>
+  </div>
+
+  <section class="signin" id="signin">
+    <p>See personalised recommendations</p>
+    <a class="cta" href="#signin">Sign in</a>
+    <p style="margin-top:8px">New customer? <a class="more" href="#signin">Start here.</a></p>
+  </section>
+</main>
+
+<footer>
+  <button class="backtop" id="backtop">Back to top</button>
+  <div class="fcols">
+    <div class="wrap">
+      <div><h4>Get to know us</h4><ul><li><a href="#top">About Spandhan</a></li><li><a href="#top">Careers</a></li><li><a href="#top">Press releases</a></li><li><a href="#top">Spandhan Science</a></li></ul></div>
+      <div><h4>Connect with us</h4><ul><li><a href="#top">Instagram</a></li><li><a href="#top">X</a></li><li><a href="#top">YouTube</a></li></ul></div>
+      <div><h4>Make money with us</h4><ul><li><a href="#top">Sell on Spandhan</a></li><li><a href="#top">Become an affiliate</a></li><li><a href="#top">Fulfilment by Spandhan</a></li><li><a href="#top">Advertise your products</a></li></ul></div>
+      <div><h4>Let us help you</h4><ul><li><a href="#top">Your account</a></li><li><a href="#top">Returns centre</a></li><li><a href="#top">Recalls and safety alerts</a></li><li><a href="#top">Help</a></li></ul></div>
+    </div>
+  </div>
+  <div class="fbase">
+    <div class="wrap">
+      <span class="logo">spandhan<span class="dot" style="color:var(--marigold)">.</span></span>
+      <span>EN · हिंदी · मराठी · தமிழ்</span>
+      <span>A demo storefront built for learning. Not a real shop.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  // ---- Product data (fictional demo catalogue) ----
+  const shelves = {
+    deals: [
+      ["Volt X5 5G (8GB, 128GB), Midnight Teal","phone",3,12999,21999,4.2,"18,402"],
+      ["Sonora ANC Pro wireless earbuds, 40h battery","head",1,1799,4999,4.1,"9,215"],
+      ["Pulse Fit 2 smartwatch, 1.85\" AMOLED, BT calling","watch",6,2299,7999,4.0,"31,088"],
+      ["Lumina 43\" 4K Ultra HD smart Google TV","tv",3,24990,42999,4.3,"6,734"],
+      ["Arka Book 14 laptop, Ryzen 5, 16GB RAM, 512GB SSD","laptop",5,41990,58990,4.4,"2,190"],
+      ["Rangoli cotton anarkali kurta set with dupatta","kurta",4,899,2899,4.0,"12,561"],
+      ["Trailrun men's running shoes, mesh, lightweight","shoe",2,1249,3499,3.9,"7,402"],
+      ["Yatra 30L laptop backpack, water resistant","bag",1,749,2199,4.2,"22,330"]
+    ],
+    kitchen: [
+      ["Annapurna hard-anodised kadai, 3L, with glass lid","kadai",2,1149,2490,4.4,"14,907"],
+      ["Chakki Pro 750W mixer grinder, 3 jars","mixer",1,2799,5299,4.2,"41,276"],
+      ["Thermal steel water bottle, 1L, hot & cold 24h","bottle",6,499,999,4.3,"58,114"],
+      ["Brass diya set of 6 for Diwali pooja","diya",4,649,1299,4.5,"3,882"],
+      ["Tulsi plant pot, ceramic, with drainage","plant",5,399,899,4.1,"5,209"],
+      ["Handloom cotton table runner, block print","saree",3,549,1199,4.2,"1,946"],
+      ["Pressure-safe stainless steel kadai, 2.5L","kadai",4,999,1899,4.0,"8,034"]
+    ],
+    books: [
+      ["The Monsoon Ledger (novel, paperback)","book",2,249,399,4.5,"3,118"],
+      ["UPSC Prelims 2027: Polity Workbook","book",3,385,595,4.6,"12,640"],
+      ["रसोई की कहानियाँ (Hindi, paperback)","book",4,199,299,4.4,"981"],
+      ["Panchatantra Picture Stories, set of 5","book",5,349,750,4.7,"6,205"],
+      ["Coding for Class 8: Python basics","book",6,299,450,4.3,"1,402"],
+      ["Mumbai After Midnight (thriller)","book",1,229,399,4.1,"2,775"]
+    ]
+  };
+  const tints = ["--tile-1","--tile-2","--tile-3","--tile-4","--tile-5","--tile-6"];
+  const inr = n => n.toLocaleString("en-IN");
+  const stars = r => "★★★★★".slice(0,Math.round(r)) + "☆☆☆☆☆".slice(0,5-Math.round(r));
+
+  document.querySelectorAll(".track").forEach(track=>{
+    const items = shelves[track.dataset.shelf];
+    track.innerHTML = items.map(([name,icon,t,price,mrp,rating,count],i)=>{
+      const off = Math.round((1-price/mrp)*100);
+      return `<article class="p">
+        <a class="thumb" href="#${track.dataset.shelf}" style="background:var(${tints[(t-1)%6]})" aria-label="${name}"><svg class="ico"><use href="#i-${icon}"/></svg></a>
+        <div class="badge"><b>${off}% off</b>${track.dataset.shelf==="deals"?"<span>Utsav deal</span>":""}</div>
+        <a class="name" href="#${track.dataset.shelf}">${name}</a>
+        <div class="stars" aria-label="${rating} out of 5 stars">${stars(rating)} <small>${count}</small></div>
+        <div class="price"><strong><sup>₹</sup>${inr(price)}</strong><s>M.R.P: ₹${inr(mrp)}</s></div>
+        <div class="ship">Free delivery by Tue, 13 Oct</div>
+        <button class="add" type="button" data-name="${name.replace(/"/g,'&quot;')}">Add to cart</button>
+      </article>`;
+    }).join("");
+  });
+
+  // ---- Cart ----
+  let count = 0;
+  const countEl = document.getElementById("cart-count");
+  const toast = document.getElementById("toast");
+  let tt;
+  function say(msg){ toast.textContent = msg; toast.classList.add("show"); clearTimeout(tt); tt = setTimeout(()=>toast.classList.remove("show"),2200); }
+  document.addEventListener("click", e=>{
+    const b = e.target.closest(".add");
+    if(!b) return;
+    count++; countEl.textContent = count;
+    b.dataset.added = ""; b.textContent = "Added ✓";
+    say("Added to cart: " + b.dataset.name);
+  });
+
+  // ---- Shelf scroll buttons ----
+  document.querySelectorAll(".scroll-btn").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const track = btn.parentElement.querySelector(".track");
+      track.scrollBy({left: Number(btn.dataset.dir) * track.clientWidth * .8, behavior:"smooth"});
+    });
+  });
+
+  // ---- Carousel ----
+  const slides = document.getElementById("slides");
+  const n = slides.children.length;
+  const dots = document.getElementById("dots");
+  let idx = 0, timer;
+  for(let i=0;i<n;i++){ const d=document.createElement("button"); d.setAttribute("aria-label","Show offer "+(i+1)); d.onclick=()=>go(i,true); dots.appendChild(d); }
+  function go(i,user){
+    idx = (i+n)%n;
+    slides.style.transform = `translateX(-${idx*100}%)`;
+    [...dots.children].forEach((d,j)=>d.setAttribute("aria-current", j===idx));
+    if(user) restart();
+  }
+  function restart(){ clearInterval(timer); if(!matchMedia("(prefers-reduced-motion: reduce)").matches) timer = setInterval(()=>go(idx+1),5500); }
+  document.getElementById("prev").onclick=()=>go(idx-1,true);
+  document.getElementById("next").onclick=()=>go(idx+1,true);
+  go(0); restart();
+
+  // ---- Deal countdown ----
+  let left = 6*3600+12*60+40;
+  const tEl = document.getElementById("timer");
+  setInterval(()=>{ left = left>0?left-1:0; const h=String(Math.floor(left/3600)).padStart(2,"0"), m=String(Math.floor(left%3600/60)).padStart(2,"0"), s=String(left%60).padStart(2,"0"); tEl.textContent=`Ends in ${h}:${m}:${s}`; },1000);
+
+  // ---- Search ----
+  ["search-desktop","search-mobile"].forEach(id=>{
+    document.getElementById(id).addEventListener("submit",e=>{
+      e.preventDefault();
+      const q = e.target.querySelector("input").value.trim();
+      say(q ? `Showing results for “${q}” (demo)` : "Type something to search");
+    });
+  });
+
+  document.getElementById("backtop").onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+})();
+</script>
+
+</body>
+</html>
