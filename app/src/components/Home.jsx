@@ -7,6 +7,7 @@ import { useStore } from "../store.jsx";
 import { PRODUCTS, tintVar } from "../data/products.js";
 import Hero from "./Hero.jsx";
 import ProductCard from "./ProductCard.jsx";
+import { ProductImg } from "./Img.jsx";
 
 // Deals end at midnight IST, like a real daily deal.
 function useCountdownToMidnight() {
@@ -49,9 +50,9 @@ function Quad({ title, items, more, onPick }) {
     <article className="tile">
       <h3>{title}</h3>
       <div className="quad">
-        {items.map(([label, Icon, tint, go]) => (
+        {items.map(([label, Icon, tint, go, pid]) => (
           <button key={label} onClick={() => onPick(go)}>
-            <span className="thumb" style={{ background: tintVar(tint) }}><Icon size={52} strokeWidth={1.2} /></span>
+            <span className="thumb" style={{ background: tintVar(tint) }}><ProductImg id={pid} fallback={<Icon size={52} strokeWidth={1.2} />} /></span>
             {label}
           </button>
         ))}
@@ -83,10 +84,10 @@ export default function Home() {
             more="Explore all"
             onPick={browse}
             items={[
-              ["Cookware", CookingPot, 2, { cat: "Home & Kitchen", q: "kadai" }],
-              ["Mixer grinders", Blend, 1, { cat: "Home & Kitchen", q: "mixer" }],
-              ["Bottles & flasks", Milk, 6, { cat: "Home & Kitchen", q: "bottle" }],
-              ["Pooja essentials", Lamp, 4, { cat: "Home & Kitchen", q: "diya" }],
+              ["Cookware", CookingPot, 2, { cat: "Home & Kitchen", q: "kadai" }, "h1"],
+              ["Mixer grinders", Blend, 1, { cat: "Home & Kitchen", q: "mixer" }, "h2"],
+              ["Bottles & flasks", Milk, 6, { cat: "Home & Kitchen", q: "bottle" }, "h3"],
+              ["Pooja essentials", Lamp, 4, { cat: "Home & Kitchen", q: "diya" }, "h4"],
             ]}
           />
           <Quad
@@ -94,16 +95,16 @@ export default function Home() {
             more="See more"
             onPick={browse}
             items={[
-              ["Kurtas", Shirt, 4, { cat: "Fashion", q: "kurta" }],
-              ["Jewellery", Gem, 3, { cat: "Fashion", q: "jhumka" }],
-              ["Footwear", Footprints, 2, { cat: "Fashion", q: "shoes" }],
-              ["Bags", Backpack, 5, { cat: "Fashion", q: "backpack" }],
+              ["Kurtas", Shirt, 4, { cat: "Fashion", q: "kurta" }, "f1"],
+              ["Jewellery", Gem, 3, { cat: "Fashion", q: "jhumka" }, "f5"],
+              ["Footwear", Footprints, 2, { cat: "Fashion", q: "shoes" }, "f3"],
+              ["Bags", Backpack, 5, { cat: "Fashion", q: "backpack" }, "f4"],
             ]}
           />
           <article className="tile">
             <h3>Smartwatches under ₹2,999</h3>
             <button className="big" style={{ background: tintVar(6) }} onClick={() => browse({ q: "smartwatch" })} aria-label="Shop smartwatches">
-              <Watch size={150} strokeWidth={0.9} />
+              <ProductImg id="m5" fallback={<Watch size={150} strokeWidth={0.9} />} />
             </button>
             <button className="more" onClick={() => browse({ q: "smartwatch" })}>Shop now</button>
           </article>
@@ -112,10 +113,10 @@ export default function Home() {
             more="See all offers"
             onPick={browse}
             items={[
-              ["Smart TVs", Tv, 3, { cat: "Electronics", q: "tv" }],
-              ["Headphones", Headphones, 1, { q: "earbuds" }],
-              ["Laptops", Laptop, 5, { cat: "Electronics", q: "laptop" }],
-              ["Gaming", Gamepad2, 6, { cat: "Electronics", q: "controller" }],
+              ["Smart TVs", Tv, 3, { cat: "Electronics", q: "tv" }, "e1"],
+              ["Headphones", Headphones, 1, { q: "earbuds" }, "m4"],
+              ["Laptops", Laptop, 5, { cat: "Electronics", q: "laptop" }, "e2"],
+              ["Gaming", Gamepad2, 6, { cat: "Electronics", q: "controller" }, "e5"],
             ]}
           />
         </section>

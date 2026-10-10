@@ -1,6 +1,7 @@
 import { Heart, Star, Plus, Minus } from "lucide-react";
 import { useStore } from "../store.jsx";
 import { inr, tintVar } from "../data/products.js";
+import { ProductImg } from "./Img.jsx";
 
 export function Stars({ rating, reviews }) {
   const full = Math.round(rating);
@@ -47,7 +48,7 @@ export default function ProductCard({ product: p, showDealTag = false }) {
     <article className="p">
       <div className="p__media">
         <button className="thumb" style={{ background: tintVar(p.tint) }} onClick={() => setQuickViewId(p.id)} aria-label={`Quick view: ${p.name}`}>
-          <Icon size={84} strokeWidth={1.1} />
+          <ProductImg id={p.id} alt={p.name} fallback={<Icon size={84} strokeWidth={1.1} />} />
           <span className="p__peek">Quick view</span>
         </button>
         <button className={`heart ${wished ? "is-on" : ""}`} onClick={() => toggleWish(p.id)} aria-pressed={wished} aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}>

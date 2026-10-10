@@ -3,6 +3,7 @@ import { X, Heart, Trash2, Check, Truck, RotateCcw, ShieldCheck, ShoppingCart } 
 import { useStore } from "../store.jsx";
 import { getProduct, inr, tintVar, FREE_DELIVERY_AT } from "../data/products.js";
 import { Stars, Price, QtyStepper } from "./ProductCard.jsx";
+import { ProductImg } from "./Img.jsx";
 
 // Close on Escape and return focus to whatever opened the panel.
 function useDismiss(open, onClose) {
@@ -41,7 +42,7 @@ export function QuickView() {
       <div className="modal" role="dialog" aria-modal="true" aria-labelledby="qv-title" tabIndex={-1} ref={panel}>
         <button className="close" onClick={close} aria-label="Close"><X size={20} /></button>
         <div className="modal__media" style={{ background: tintVar(p.tint) }}>
-          <Icon size={200} strokeWidth={0.9} />
+          <ProductImg id={p.id} alt={p.name} fallback={<Icon size={200} strokeWidth={0.9} />} />
         </div>
         <div className="modal__info">
           <span className="brand">Visit the {p.brand} store</span>
@@ -137,7 +138,7 @@ export function CartDrawer() {
                 return (
                   <li key={p.id}>
                     <button className="line__img" style={{ background: tintVar(p.tint) }} onClick={() => { setCartOpen(false); setQuickViewId(p.id); }} aria-label={`View ${p.name}`}>
-                      <Icon size={40} strokeWidth={1.2} />
+                      <ProductImg id={p.id} fallback={<Icon size={40} strokeWidth={1.2} />} />
                     </button>
                     <div className="line__info">
                       <p className="line__name">{p.name}</p>

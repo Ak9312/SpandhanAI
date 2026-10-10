@@ -346,3 +346,13 @@ svg { flex: none; }
   .logo { font-size: 23px; }
   .cta--marigold { padding: 8px 50px; }
 }
+
+/* ===== Photos (images/products, images/hero) ===== */
+.pimg { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
+.thumb, .big, .modal__media, .line__img { overflow: hidden; position: relative; }
+.p__media:hover .pimg, .quad button:hover .pimg, .big:hover .pimg { transform: scale(1.05); }
+.modal__media .pimg { position: absolute; inset: 0; }
+.slide__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.slide.has-photo::before { content: ""; position: absolute; inset: 0; z-index: 0; background: linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.25) 45%, transparent 70%); }
+.slide > div { position: relative; z-index: 1; }
+.slide.has-photo .art { visibility: hidden; }

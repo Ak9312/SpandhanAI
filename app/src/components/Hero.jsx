@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Lamp, Sprout, Smartphone, Headphones, Watch, BookOpen } from "lucide-react";
 import { useStore } from "../store.jsx";
+import { useImage } from "./Img.jsx";
 
 const SLIDES = [
   {
@@ -32,10 +33,29 @@ const SLIDES = [
   },
 ];
 
+// Banner photo for a slide (images/hero/hero-N.jpg). Until it exists, the icon art shows.
+function SlideBg({ n, onReady }) {
+  const { src, onLoad, onError } = useImage(`hero/hero-${n}`);
+  if (!src) return null;
+  return (
+    <img
+      className="slide__bg"
+      src={src}
+      alt=""
+      aria-hidden="true"
+      decoding="async"
+      onLoad={() => { onLoad(); onReady(); }}
+      onError={onError}
+      ref={(el) => { if (el?.complete && el.naturalWidth) onReady(); }}
+    />
+  );
+}
+
 export default function Hero() {
   const { browse } = useStore();
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [photo, setPhoto] = useState({});
   const touchX = useRef(null);
   const n = SLIDES.length;
   const go = useCallback((i) => setIdx((i + n) % n), [n]);
@@ -64,7 +84,8 @@ export default function Hero() {
     >
       <div className="slides" style={{ transform: `translateX(-${idx * 100}%)` }}>
         {SLIDES.map((s, i) => (
-          <div key={s.cls} className={`slide ${s.cls}`} aria-hidden={i !== idx}>
+          <div key={s.cls} className={`slide ${s.cls} ${photo[i] ? "has-photo" : ""}`} aria-hidden={i !== idx}>
+            <SlideBg n={i + 1} onReady={() => setPhoto((p) => (p[i] ? p : { ...p, [i]: true }))} />
             <div className={`slide__copy ${i === idx ? "is-in" : ""}`}>
               <div className="eyebrow">{s.eyebrow}</div>
               <h2>{s.title}</h2>
