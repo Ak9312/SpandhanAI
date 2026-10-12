@@ -1,16 +1,23 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { createReadStream, existsSync, statSync } from "node:fs";
+import { createReadStream, existsSync, statSync, cpSync } from "node:fs";
 import { resolve, extname } from "node:path";
 
-// The built site is written to the repo root so GitHub Pages ("Deploy from a branch",
-// main / root) serves it with no extra setup. `base: "./"` keeps asset paths relative,
-// so it works at https://ak9312.github.io/SpandhanAI/ and when opened locally.
+// Two places host this site:
 //
-// Photos live in the repo-root images/ folder and are served from there directly by
-// GitHub Pages. This small plugin serves the same folder during `npm run dev`.
+// 1. GitHub Pages ("Deploy from a branch", main / root): the built site is written to the
+//    repo root, next to the images/ folder, and committed.
+// 2. Vercel (Root Directory = app): Vercel sets VERCEL=1 and expects the build in app/dist,
+//    so there the site is built into dist/ and images/ is copied in alongside it.
+//
+// `base: "./"` keeps asset paths relative, so both hosts (and opening it locally) work.
+const ON_VERCEL = !!process.env.VERCEL;
 const IMAGES = resolve(__dirname, "../images");
+const OUT_DIR = ON_VERCEL ? resolve(__dirname, "dist") : resolve(__dirname, "..");
+
 const TYPES = { ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp" };
+
+// Serves the repo-root images/ folder during `npm run dev`.
 const serveRepoImages = {
   name: "serve-repo-images",
   configureServer(server) {
@@ -23,13 +30,24 @@ const serveRepoImages = {
   },
 };
 
+// On Vercel, ship the images with the build (GitHub Pages already serves them from the repo).
+const copyImagesForVercel = {
+  name: "copy-images-for-vercel",
+  apply: "build",
+  closeBundle() {
+    if (ON_VERCEL && existsSync(IMAGES)) {
+      cpSync(IMAGES, resolve(OUT_DIR, "images"), { recursive: true });
+    }
+  },
+};
+
 export default defineConfig({
-  plugins: [react(), serveRepoImages],
+  plugins: [react(), serveRepoImages, copyImagesForVercel],
   base: "./",
   publicDir: false,
   build: {
-    outDir: "..",
-    emptyOutDir: false,
+    outDir: OUT_DIR,
+    emptyOutDir: ON_VERCEL,
     assetsDir: "assets",
   },
 });
